@@ -11,12 +11,20 @@ import (
 //go:generate swagger generate spec
 func main() {
 
-	val, ok := os.LookupEnv("STATIC_FILES")
+	staticFiles, ok := os.LookupEnv("STATIC_FILES")
 	if !ok {
 		log.Printf("%s not set\n", "STATIC_FILES")
-		val = "./web"
+		staticFiles = "./web"
 	} else {
-		log.Printf("%s=%s\n", "STATIC_FILES", val)
+		log.Printf("%s=%s\n", "STATIC_FILES", staticFiles)
+	}
+
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		log.Printf("%s not set\n", "PORT")
+		port = "8080"
+	} else {
+		log.Printf("%s=%s\n", "PORT", port)
 	}
 
 	internal.InitializeDatabase()
@@ -26,7 +34,7 @@ func main() {
 	http.HandleFunc("/api/save-beer", internal.Chain(api.SaveBeer, internal.Method("POST"), internal.Logging()))
 	http.HandleFunc("/api/user-beer-preferences", internal.Chain(api.GetUserBeerPreferences, internal.Method("GET"), internal.Logging()))
 	http.HandleFunc("/api/update-user-beer-preferences", internal.Chain(api.UpdateUserBeerPreferences, internal.Method("POST"), internal.Logging()))
-	http.Handle("/", internal.ChainExt(http.FileServer(http.Dir(val)), internal.Logging()))
+	http.Handle("/", internal.ChainExt(http.FileServer(http.Dir(staticFiles)), internal.Logging()))
 
-	_ = http.ListenAndServe(":8080", nil)
+	_ = http.ListenAndServe(":" + port, nil)
 }
