@@ -1,0 +1,241 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Title: Beers API",
+    "title": "Beers API",
+    "contact": {
+      "name": "Viktor Citaku",
+      "email": "viktor.citaku@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.1"
+  },
+  "host": "localhost",
+  "basePath": "/v1",
+  "paths": {
+    "/api/beers": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Returns the list of beers.",
+        "operationId": "getBeers",
+        "responses": {
+          "default": {
+            "$ref": "#/responses/getBeersResponse"
+          }
+        }
+      }
+    },
+    "/api/save-beer": {
+      "post": {
+        "summary": "Saves beer by given ID and Name.",
+        "operationId": "saveBeers",
+        "parameters": [
+          {
+            "type": "object",
+            "name": "saveBeerPayload",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/saveBeerPayload"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " no body"
+          },
+          "default": {
+            "description": " no body"
+          }
+        }
+      }
+    },
+    "/api/save-user": {
+      "post": {
+        "summary": "Saves user by given email.",
+        "operationId": "saveUser",
+        "responses": {
+          "200": {
+            "description": " no body"
+          },
+          "default": {
+            "description": " no body"
+          }
+        }
+      }
+    },
+    "/api/update-user-beer-preferences": {
+      "post": {
+        "summary": "Updates beer preferences by given UserBeerPreferences array.",
+        "operationId": "updateUserBeerPreferences",
+        "parameters": [
+          {
+            "name": "userBeerPreferencesPayload",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/userBeerPreferencesPayload"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " no body"
+          },
+          "default": {
+            "description": " no body"
+          }
+        }
+      }
+    },
+    "/api/user-beer-preferences": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Returns the list of UserBeerPreferences.",
+        "operationId": "getUserBeerPreferences",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/getUserBeerPreferencesResponse"
+          },
+          "204": {
+            "description": " When there is no data"
+          },
+          "default": {
+            "$ref": "#/responses/getUserBeerPreferencesResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "beersPayload": {
+      "type": "object",
+      "title": "BeersPayload ...",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-name": "BeersPayload",
+      "x-go-package": "viktorcitaku.dev/beer/api"
+    },
+    "saveBeerPayload": {
+      "type": "object",
+      "title": "SaveBeerPayload ...",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "description": "name",
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-name": "SaveBeerPayload",
+      "x-go-package": "viktorcitaku.dev/beer/api"
+    },
+    "userBeerPreferencesPayload": {
+      "type": "object",
+      "title": "UserBeerPreferencesPayload ...",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "comment": {
+          "type": "string",
+          "x-go-name": "Comment"
+        },
+        "drunk_before": {
+          "type": "boolean",
+          "x-go-name": "DrunkTheBeerBefore"
+        },
+        "got_drunk": {
+          "type": "boolean",
+          "x-go-name": "GotDrunk"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "last_time": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "LastTime"
+        },
+        "name": {
+          "description": "name",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Rating"
+        }
+      },
+      "x-go-name": "UserBeerPreferencesPayload",
+      "x-go-package": "viktorcitaku.dev/beer/api"
+    }
+  },
+  "responses": {
+    "getBeersResponse": {
+      "description": "BeersPayload ...",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/beersPayload"
+        }
+      }
+    },
+    "getUserBeerPreferencesResponse": {
+      "description": "GetUserBeerPreferencesResponse ...",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/userBeerPreferencesPayload"
+        }
+      }
+    }
+  }
+}

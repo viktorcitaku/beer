@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+</head>
+
+<body>
+<h1>Register</h1>
+
+<label for="email_address">Email:</label>
+<input id="email_address" name="email_address" type="email" required/>
+<a id="register_link" href="search.html" hidden>Register</a>
+
+<script type="text/javascript">
+  const emailAddress = document.getElementById('email_address');
+  const registerLink = document.getElementById('register_link');
+
+  emailAddress.addEventListener('keyup', function (e) {
+    let isValidEmail = emailAddress.checkValidity();
+    registerLink.hidden = !isValidEmail;
+  });
+
+  registerLink.addEventListener('click', function (e) {
+
+    fetch('/api/save-user', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'email=' + emailAddress.value
+    })
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error("Something went wrong!");
+      } else {
+        console.log(document.cookie.split('; ').find(row => row.startsWith('BEER_SESSION')));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  })
+</script>
+
+</body>
+
+</html>
