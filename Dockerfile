@@ -8,6 +8,7 @@ RUN CGO_ENABLED=0 go build -o /server
 FROM alpine
 EXPOSE 8080
 ENV STATIC_FILES /opt/web
+ENV PORT 8080
 WORKDIR /
 COPY --from=build-env /server /opt
 COPY ./web /opt/web
