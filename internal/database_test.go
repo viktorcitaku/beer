@@ -3,6 +3,7 @@ package internal
 import (
 	"hash/fnv"
 	"io"
+	"math"
 	"testing"
 	"time"
 )
@@ -23,5 +24,29 @@ func TestTicker(t *testing.T) {
 		}
 	}()
 	time.Sleep(10 * time.Second)
+}
+
+func TestExecuteDatabaseCleanup(t *testing.T) {
+
+	t.SkipNow() // This test is ignored
+
+	InitializeDatabase()
+
+	u1 := &User{
+		Email:       "drake@owl",
+		LastUpdated: time.Now().Add(-10 * time.Minute),
+	}
+
+	u2 := &User{
+		Email:       "fero@gang",
+		LastUpdated: time.Now().Add(-10 * time.Minute),
+	}
+
+	SaveUser(u1)
+	SaveUser(u2)
+
+	t.Log(math.Abs(u1.LastUpdated.Sub(time.Now()).Minutes()) > 5)
+
+	ExecuteDatabaseCleanup()
 }
 

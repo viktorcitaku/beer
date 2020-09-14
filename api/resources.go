@@ -53,7 +53,7 @@ func SaveUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save the user in DB
-	internal.SaveUser(r.Form["email"][0])
+	internal.SaveUserWithEmail(r.Form["email"][0])
 
 	w.WriteHeader(http.StatusOK)
 }
@@ -281,7 +281,7 @@ func SaveBeer(w http.ResponseWriter, r *http.Request) {
 			log.Printf("User: %s was not present! New will be created.", session.Values["email"].(string))
 		}
 		// The save function does update at the same time
-		internal.SaveUser(session.Values["email"].(string))
+		internal.SaveUserWithEmail(session.Values["email"].(string))
 
 		// Search for UserBeerPreferences
 		ubp := internal.UserBeerPreferencesByBeerId(sbp.ID, session.Values["email"].(string))
@@ -399,7 +399,7 @@ func UpdateUserBeerPreferences(w http.ResponseWriter, r *http.Request) {
 		var payload []map[string]interface{}
 		_ = json.NewDecoder(r.Body).Decode(&payload)
 
-		internal.SaveUser(session.Values["email"].(string))
+		internal.SaveUserWithEmail(session.Values["email"].(string))
 
 		for _, p := range payload {
 

@@ -6,6 +6,7 @@ import (
 	"hash/fnv"
 	"io"
 	"log"
+	"math"
 	"time"
 )
 
@@ -67,63 +68,75 @@ func InitializeDatabase() {
 
 	DB = db
 
-	ExecuteTicker()
-}
-
-// ExecuteTicker ...
-func ExecuteTicker() {
 	go func() {
 		for range time.Tick(time.Minute) {
-			logString := "\n===== START DB CLEANUP ====\n"
-
-			txn := DB.Txn(true) // here is an issue
-			txn.TrackChanges()
-
-			it, err := txn.Get("User", "id")
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			now := time.Now()
-
-			for obj := it.Next(); obj != nil; obj = it.Next() {
-				u := obj.(*User)
-				if u != nil && u.LastUpdated.Sub(now) > 5 {
-					logString += fmt.Sprintf("Beer Preference for user: %s are going to be deleted!\n", u.Email)
-					preferences := UserBeerPreferencesByEmail(u.Email)
-					if preferences != nil {
-						for _, p := range preferences {
-							logString += fmt.Sprintf("BeerID: %d, BeerName: %s, is going to be deleted!\n", p.BeerID, p.BeerName)
-							_ = txn.Delete("UserBeerPreferences", p)
-						}
-					}
-
-					logString += fmt.Sprintf("User: %s  is going to be deleted!\n", u.Email)
-					_ = txn.Delete("User", u)
-				}
-			}
-
-			changes := txn.Changes()
-			if changes != nil {
-				txn.Commit()
-			} else {
-				txn.Abort()
-			}
-
-			logString += "===== END DB CLEANUP ====\n"
-			log.Printf(logString)
+			ExecuteDatabaseCleanup()
 		}
 	}()
 }
 
+// ExecuteDatabaseCleanup ...
+func ExecuteDatabaseCleanup() {
+
+	logString := "\n===== START DB CLEANUP ====\n"
+
+	txn := DB.Txn(true) // here is an issue
+	txn.TrackChanges()
+
+	it, err := txn.Get("User", "id")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	now := time.Now()
+
+	for obj := it.Next(); obj != nil; obj = it.Next() {
+		u := obj.(*User)
+		if u != nil && math.Abs(u.LastUpdated.Sub(now).Minutes()) > 5 {
+			logString += fmt.Sprintf("Beer Preference for user: %s are going to be deleted!\n", u.Email)
+			preferences := UserBeerPreferencesByEmail(u.Email)
+			if preferences != nil {
+				for _, p := range preferences {
+					logString += fmt.Sprintf("BeerID: %d, BeerName: %s, is going to be deleted!\n", p.BeerID, p.BeerName)
+					_ = txn.Delete("UserBeerPreferences", p)
+				}
+			}
+
+			logString += fmt.Sprintf("User: %s  is going to be deleted!\n", u.Email)
+			_ = txn.Delete("User", u)
+		}
+	}
+
+	changes := txn.Changes()
+	if changes != nil {
+		txn.Commit()
+	} else {
+		txn.Abort()
+	}
+
+	logString += "===== END DB CLEANUP ====\n"
+	log.Printf(logString)
+}
+
 // SaveUser ...
-func SaveUser(email string) {
+func SaveUserWithEmail(email string) {
 	user := &User{
 		Email:       email,
 		LastUpdated: time.Now(),
 	}
 
+	txn := DB.Txn(true)
+
+	if err := txn.Insert("User", user); err != nil {
+		log.Println(err)
+	} else {
+		// Commit the transaction
+		txn.Commit()
+	}
+}
+
+func SaveUser(user *User) {
 	txn := DB.Txn(true)
 
 	if err := txn.Insert("User", user); err != nil {
