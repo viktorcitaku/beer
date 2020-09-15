@@ -2,8 +2,8 @@
 //
 // Title: Beers API
 // Schemes: http
-// Host: localhost
-// BasePath: /v1
+// Host: https://obscure-spire-53165.herokuapp.com/
+// BasePath: /
 // Version: 0.0.1
 // License: MIT http://opensource.org/licenses/MIT
 // Contact: Viktor Citaku<viktor.citaku@gmail.com>

@@ -6,7 +6,7 @@
     "application/json"
   ],
   "schemes": [
-    "http"
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -22,8 +22,8 @@
     },
     "version": "0.0.1"
   },
-  "host": "localhost",
-  "basePath": "/v1",
+  "host": "obscure-spire-53165.herokuapp.com",
+  "basePath": "/",
   "paths": {
     "/api/beers": {
       "get": {
