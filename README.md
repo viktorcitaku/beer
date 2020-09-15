@@ -20,3 +20,7 @@ If you have docker installed the following commands have to be executed one afte
 #### The standard way
 
 If you have golang already installed, then in the current root folder run the following command `go run main.go`
+
+### Live Demo
+
+[Beer](https://obscure-spire-53165.herokuapp.com/)
