@@ -24,6 +24,23 @@ func Logging() Middleware {
 	}
 }
 
+// Logging logs all requests with its path and the time it took to process
+func AllowCors() Middleware {
+
+	return func(f http.HandlerFunc) http.HandlerFunc {
+
+		return func(w http.ResponseWriter, r *http.Request) {
+
+			//Allow CORS here By * or specific origin
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Headers", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "*")
+
+			f(w, r)
+		}
+	}
+}
+
 // Method ensures that url can only be requested with a specific method, else returns a 400 Bad Request
 func Method(m string) Middleware {
 

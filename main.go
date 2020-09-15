@@ -34,7 +34,7 @@ func main() {
 	http.HandleFunc("/api/save-beer", internal.Chain(api.SaveBeer, internal.Method("POST"), internal.Logging()))
 	http.HandleFunc("/api/user-beer-preferences", internal.Chain(api.GetUserBeerPreferences, internal.Method("GET"), internal.Logging()))
 	http.HandleFunc("/api/update-user-beer-preferences", internal.Chain(api.UpdateUserBeerPreferences, internal.Method("POST"), internal.Logging()))
-	http.Handle("/", internal.ChainExt(http.FileServer(http.Dir(staticFiles)), internal.Logging()))
+	http.Handle("/", internal.ChainExt(http.FileServer(http.Dir(staticFiles)), internal.AllowCors(), internal.Logging()))
 
 	_ = http.ListenAndServe(":" + port, nil)
 }
