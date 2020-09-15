@@ -1,4 +1,4 @@
-# beer [![Build Status](https://travis-ci.org/viktorcitaku/beer.svg?branch=master&label=test)](https://travis-ci.org/viktorcitaku/beer)
+# beer ![Travis (.org)](https://img.shields.io/travis/viktorcitaku/beer?label=tests)
 Simple Golang Application using a public API to pickup beers
 
 ### System requirements
